@@ -24,7 +24,7 @@ BuildRequires:  pkgconfig(wayland-protocols) >= 1.14
 xdg-desktop-portal backend for wlroots
 
 %prep
-%autosetup
+%autosetup -N -n %{name}-%{commit}
 
 
 %build
