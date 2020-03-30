@@ -5,7 +5,7 @@
 Name:           xdg-desktop-portal-wlr
 Summary:        xdg-desktop-portal backend for wlroots
 License:        MIT
-Release:        1%{?dist}
+Release:        1.git%{abbrev}%{?dist}
 URL:            %{git_url}
 
 Version:        0.0
