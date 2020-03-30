@@ -14,7 +14,7 @@ Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.
 BuildRequires:  gcc
 BuildRequires:  meson
 BuildRequires:  pkgconfig(libdrm)
-BuildRequires:  pkgconfig(libpipewire) >= 0.2.9
+BuildRequires:  pkgconfig(libpipewire-0.3) >= 0.2.9
 BuildRequires:  pkgconfig(libsystemd)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.14
