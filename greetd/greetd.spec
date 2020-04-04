@@ -10,6 +10,9 @@ Source0:        %{url}/archive/%{version}.tar.gz
 BuildRequires:  cargo
 BuildRequires:  scdoc
 
+Requires: pam
+Requires: audit-libs
+
 %description
 A login manager daemon
 
