@@ -1,5 +1,5 @@
 Name:     scdoc
-Version:  1.10.0
+Version:  1.10.1
 Release:  1%{?dist}
 Summary:  Tool for generating roff manual pages
 
@@ -48,6 +48,9 @@ make check
 %{_datarootdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Sat Apr 04 2020 Jarkko Oranen <oranenj@iki.fi> - 1.10.1-1
+- New upstream release
+
 * Mon Jan 20 2020 Jan Staněk <jstanek@redhat.com> - 1.10.0-1
 - Upstream release 1.10.0
 
