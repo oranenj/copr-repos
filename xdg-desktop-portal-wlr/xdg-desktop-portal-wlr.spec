@@ -37,7 +37,7 @@ xdg-desktop-portal backend for wlroots
 
 
 %files
-/usr/bin/xdg-desktop-portal-wlr
+/usr/libexec/xdg-desktop-portal-wlr
 /usr/share/xdg-desktop-portal/portals/wlr.portal
 /usr/lib/systemd/user/xdg-desktop-portal-wlr.service
 /usr/share/dbus-1/services/org.freedesktop.impl.portal.desktop.wlr.service
