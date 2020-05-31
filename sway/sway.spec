@@ -1,13 +1,15 @@
+%define git_owner       oranenj
+%define git_url         https://github.com/%{git_owner}/%{name}
+%define commit          0dca7f1b6b3d7a2bd0dc30bdf8a4fbca7a9b94f0
+%define abbrev          %(c=%{commit}; echo ${c:0:7})
+
 Name:           sway
-Version:        1.4
-Release:        5%{?dist}
+Version:        1.5
+Release:        0.git%{abbrev}%{?dist}
 Summary:        i3-compatible window manager for Wayland
 License:        MIT
-URL:            https://github.com/swaywm/sway
-Source0:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz
-Patch1:         https://github.com/swaywm/sway/commit/29a5ce5f65d04b046271fbe53850836c77bbee80.patch#/link-with-fno-common.patch
-Patch2:         https://github.com/swaywm/sway/pull/4991.patch#/sway.fix-null-strcmp.patch
-Patch3:         title-size-hack.patch
+URL:            %{git_url}
+Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.gz
 
 # FIXME: wlroots require `pkgconfig(egl)`, but assumes mesa provides it
 # (and uses it's extension header `<EGL/eglmesaext.h>).
@@ -56,7 +58,7 @@ Sway is a tiling window manager supporting Wayland compositor protocol and
 i3-compatible configuration.
 
 %prep
-%autosetup -p 1
+%autosetup -p 1 -n %{name}-%{commit}
 
 %build
 %meson
@@ -96,6 +98,9 @@ sed -i "s|^output \* bg .*|output * bg /usr/share/backgrounds/f%{fedora}/default
 %{_datadir}/backgrounds/sway
 
 %changelog
+* Sun May 31 2020 Jarkko Oranen <oranenj@iki.fi> - 1.5-0.git0dca7f1
+- Rebase on sway master
+
 * Sun Feb 09 2020 Till Hofmann <thofmann@fedoraproject.org> - 1.4-3
 - Add patch to fix strcmp on nullptr (upstream PR #4991)
 
