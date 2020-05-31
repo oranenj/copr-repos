@@ -58,7 +58,7 @@ Sway is a tiling window manager supporting Wayland compositor protocol and
 i3-compatible configuration.
 
 %prep
-%autosetup -p 1 -n %{name}-%{commit}
+%autosetup -p 1 -n %{name}-%{abbrev}
 
 %build
 %meson
