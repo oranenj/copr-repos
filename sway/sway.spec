@@ -76,8 +76,6 @@ sed -i "s|^output \* bg .*|output * bg /usr/share/backgrounds/f%{fedora}/default
 %doc README.md
 %dir %{_sysconfdir}/sway
 %config(noreplace) %{_sysconfdir}/sway/config
-%dir %{_sysconfdir}/sway/security.d
-%config(noreplace) %{_sysconfdir}/sway/security.d/00-defaults
 %{_mandir}/man1/*
 %{_mandir}/man5/*
 %{_mandir}/man7/*
