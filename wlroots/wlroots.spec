@@ -73,7 +73,7 @@ Development files for %{name}.
 
 %build
 # Disable options requiring extra/unpackaged dependencies
-%{meson} -Dexamples=false -Dxcb-errors=disabled
+%{meson} -Dexamples=false -Dlogind-provider=systemd -Dxcb-errors=disabled
 %{meson_build}
 
 

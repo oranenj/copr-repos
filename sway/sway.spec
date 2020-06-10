@@ -1,6 +1,6 @@
 %define git_owner       oranenj
 %define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          0dca7f1b6b3d7a2bd0dc30bdf8a4fbca7a9b94f0
+%define commit          b4e85212a46f81b535a4e6e8d4348a7d7918dfb5
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 
 Name:           sway
