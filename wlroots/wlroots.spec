@@ -1,9 +1,13 @@
 # Version of the .so library
 %global abi_ver 5
+%define git_owner       swaywm
+%define git_url         https://github.com/%{git_owner}/%{name}
+%define commit          c2288a7b88240e4377bfc1c67b44efb58f704a42
+%define abbrev          %(c=%{commit}; echo ${c:0:7})
 
 Name:           wlroots
-Version:        0.10.0
-Release:        2%{?dist}
+Version:        0.10.2
+Release:        0.git%{abbrev}%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Source files/overall project licensed as MIT, but
@@ -16,17 +20,10 @@ Summary:        A modular Wayland compositor library
 # the underlying licenses.
 License:        MIT
 URL:            https://github.com/swaywm/%{name}
-Source0:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz
-# this file is a modification of examples/meson.build so as to:
-# - make it self-contained
-# - only has targets for examples known to compile well (cf. "examples) global)
-Source1:        examples.meson.build
-
-# Fix build with GCC 10 (-fno-common); upstreamed in next release
-Patch:          https://github.com/swaywm/wlroots/commit/f2943bdf61afe0a3ad2227d72fcbcac8b3088b1a.patch
+Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.gz
 
 BuildRequires:  gcc
-BuildRequires:  meson >= 0.51.2
+BuildRequires:  meson >= 0.54.0
 # FIXME: wlroots require `pkgconfig(egl)`, but assumes mesa provides it
 # (and uses it's extension header `<EGL/eglmesaext.h>).
 # Upstream is working on not needing that: https://github.com/swaywm/wlroots/issues/1899
@@ -43,7 +40,7 @@ BuildRequires:  pkgconfig(pixman-1)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.17
-BuildRequires:  pkgconfig(wayland-server) >= 1.16
+BuildRequires:  pkgconfig(wayland-server) >= 1.18
 BuildRequires:  pkgconfig(winpr2)
 BuildRequires:  pkgconfig(xcb-icccm)
 BuildRequires:  pkgconfig(xkbcommon)
@@ -71,7 +68,7 @@ Development files for %{name}.
 
 
 %prep
-%autosetup -p1
+%setup -q -n %{name}-%{commit}
 
 
 %build
@@ -87,7 +84,6 @@ EXAMPLES=( %{examples} )  # Normalize whitespace by creating an array
 for example in "${EXAMPLES[@]}"; do
     install -pm0644 -Dt '%{buildroot}/%{_pkgdocdir}/examples' examples/"${example}".[ch]
 done
-install -pm0644 -D '%{SOURCE1}' '%{buildroot}/%{_pkgdocdir}/examples/meson.build'
 
 
 %check
@@ -109,6 +105,9 @@ install -pm0644 -D '%{SOURCE1}' '%{buildroot}/%{_pkgdocdir}/examples/meson.build
 
 
 %changelog
+* Wed Jun 10 2020 Jarkko Oranen <oranenj@iki.fi> - 0.10.2-0
+- git master
+
 * Wed Jan 29 2020 Jan Staněk <jstanek@redhat.com> - 0.10.0-2
 - Backport fix for compilation with GCC 10
 

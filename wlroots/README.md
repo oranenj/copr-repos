@@ -1,3 +1,0 @@
-# wlroots
-
-The wlroots package
