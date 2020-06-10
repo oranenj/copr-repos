@@ -2,7 +2,7 @@
 %global abi_ver 5
 %define git_owner       swaywm
 %define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          c2288a7b88240e4377bfc1c67b44efb58f704a42
+%define commit          7f9bbaaa17851ba7ee204fc4755ad509e06a9b07
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 
 Name:           wlroots
