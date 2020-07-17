@@ -2,11 +2,11 @@
 %global abi_ver 5
 %define git_owner       swaywm
 %define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          7f9bbaaa17851ba7ee204fc4755ad509e06a9b07
+%define commit          751a21d94f1b4f0345d040ddfd54b723631d5991
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 
 Name:           wlroots
-Version:        0.10.2
+Version:        0.11.0
 Release:        0.git%{abbrev}%{?dist}
 Summary:        A modular Wayland compositor library
 
