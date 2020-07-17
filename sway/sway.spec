@@ -1,11 +1,11 @@
 %define git_owner       oranenj
 %define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          b4e85212a46f81b535a4e6e8d4348a7d7918dfb5
+%define commit          3c5cc168c847b9ed93f41c3d51ecfd4e061dcadd
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 
 Name:           sway
 Version:        1.5
-Release:        0.git%{abbrev}%{?dist}
+Release:        1.git%{abbrev}%{?dist}
 Summary:        i3-compatible window manager for Wayland
 License:        MIT
 URL:            %{git_url}
