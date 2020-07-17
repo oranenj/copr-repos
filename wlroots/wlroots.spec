@@ -1,5 +1,5 @@
 # Version of the .so library
-%global abi_ver 5
+%global abi_ver 6
 %define git_owner       swaywm
 %define git_url         https://github.com/%{git_owner}/%{name}
 %define commit          751a21d94f1b4f0345d040ddfd54b723631d5991
