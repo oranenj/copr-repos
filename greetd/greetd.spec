@@ -11,6 +11,7 @@ Source1:        sway-config
 BuildRequires:  cargo
 BuildRequires:  scdoc
 BuildRequires:  pam-devel
+BuildRequires:  systemd
 
 Requires: pam
 Requires: audit-libs
