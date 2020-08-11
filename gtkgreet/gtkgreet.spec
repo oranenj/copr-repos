@@ -1,11 +1,11 @@
 Name:           gtkgreet
-Version:        0.5
-Release:        1%{?dist}
+Version:        0.6
+Release:        2%{?dist}
 Summary:        GTK greeter for greetd
 License:        GPL-3.0
 URL:            https://git.sr.ht/~kennylevinsen/gtkgreet
-Source0:        %{url}/archive/0.5.tar.gz
-Patch0:         fix-link-failure.patch
+Source0:        %{url}/archive/0.6.tar.gz
+#Patch0:         fix-link-failure.patch
 
 BuildRequires:  meson
 BuildRequires:  gcc
@@ -35,6 +35,9 @@ A GTK greeter for greetd
 %{_bindir}/gtkgreet
 
 %changelog
+* Tue Aug 11 2020 Jarkko Oranen <oranenj@iki.fi> - 0.6-2
+- rebuilt
+
 * Sat Apr 04 2020 Jarkko Oranen <oranenj@iki.fi> - 0.5-1
 - Initial build
 
