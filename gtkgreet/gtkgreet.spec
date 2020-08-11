@@ -8,9 +8,11 @@ Source0:        %{url}/archive/0.6.tar.gz
 
 BuildRequires:  meson
 BuildRequires:  gcc
+BuildRequires:  json-c-devel
 BuildRequires:  scdoc >= 1.9.7
 
 Requires:       greetd
+Requires:       json-c
 
 BuildRequires:  pkgconfig(gtk-layer-shell-0)
 
