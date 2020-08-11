@@ -1,11 +1,10 @@
 Name:           gtkgreet
 Version:        0.6
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        GTK greeter for greetd
 License:        GPL-3.0
 URL:            https://git.sr.ht/~kennylevinsen/gtkgreet
 Source0:        %{url}/archive/0.6.tar.gz
-#Patch0:         fix-link-failure.patch
 
 BuildRequires:  meson
 BuildRequires:  gcc
@@ -19,9 +18,10 @@ BuildRequires:  pkgconfig(gtk-layer-shell-0)
 A GTK greeter for greetd
 
 %prep
-%autosetup -p1
+%autosetup
 
 %build
+ls -l
 %meson -Dlayershell=true
 %meson_build
 
