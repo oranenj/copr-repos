@@ -10,6 +10,7 @@ Source1:        sway-config
 
 BuildRequires:  cargo
 BuildRequires:  scdoc
+BuildRequires:  pam-devel
 
 Requires: pam
 Requires: audit-libs
