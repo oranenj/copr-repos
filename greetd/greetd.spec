@@ -1,8 +1,8 @@
 Name:           greetd
 Summary:        A login manager daemon
 License:        GPL-3.0-or-later
-Version:        0.5.1
-Release:        3%{?dist}
+Version:        0.6.1
+Release:        4%{?dist}
 URL:            https://git.sr.ht/~kennylevinsen/greetd
 
 Source0:        %{url}/archive/%{version}.tar.gz
@@ -87,6 +87,9 @@ fi
 %systemd_postun greetd.service
 
 %changelog
+* Tue Aug 11 2020 Jarkko Oranen <oranenj@iki.fi> - 0.6.1-4
+- rebuilt
+
 * Sat Apr 04 2020 Jarkko Oranen <oranenj@iki.fi> - 0.5.1-3
 - Create a usable homedir for greetd
 
