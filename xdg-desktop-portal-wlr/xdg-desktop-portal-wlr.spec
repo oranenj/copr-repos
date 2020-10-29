@@ -1,6 +1,6 @@
-%define git_owner       emersion
+%define git_owner       columbarius
 %define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          b82d3fcc012d3773328a804a2eea70af127ae435
+%define commit          7b72adecba5298973b719b3ee725ca96b471fbdf
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 Name:           xdg-desktop-portal-wlr
 Summary:        xdg-desktop-portal backend for wlroots
@@ -8,7 +8,7 @@ License:        MIT
 Release:        1
 URL:            %{git_url}
 
-Version:        0.1.0
+Version:        0.2.0
 Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.gz
 
 BuildRequires:  gcc
@@ -44,6 +44,9 @@ xdg-desktop-portal backend for wlroots
 
 
 %changelog
+* Thu Oct 29 2020 Jarkko Oranen <oranenj@iki.fi> - 0.2.0-1
+- Output chooser support
+
 * Thu May 21 2020 Jarkko Oranen <oranenj@iki.fi> - 0.1.0-1
 - Upstream released 0.1.0
 
