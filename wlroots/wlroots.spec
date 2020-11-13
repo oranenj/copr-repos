@@ -1,13 +1,9 @@
 # Version of the .so library
-%global abi_ver 6
-%define git_owner       swaywm
-%define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          751a21d94f1b4f0345d040ddfd54b723631d5991
-%define abbrev          %(c=%{commit}; echo ${c:0:7})
+%global abi_ver 7
 
 Name:           wlroots
-Version:        0.11.0
-Release:        0.git%{abbrev}%{?dist}
+Version:        0.12.0
+Release:        1%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Source files/overall project licensed as MIT, but
@@ -20,32 +16,43 @@ Summary:        A modular Wayland compositor library
 # the underlying licenses.
 License:        MIT
 URL:            https://github.com/swaywm/%{name}
-Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.gz
+Source0:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz
+Source1:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz.sig
+# 0FDE7BE0E88F5E48: emersion <contact@emersion.fr>
+Source2:        https://emersion.fr/.well-known/openpgpkey/hu/dj3498u4hyyarh35rkjfnghbjxug6b19#/gpgkey-0FDE7BE0E88F5E48.gpg
+
+# this file is a modification of examples/meson.build so as to:
+# - make it self-contained
+# - only has targets for examples known to compile well (cf. "examples) global)
+Source3:        examples.meson.build
 
 BuildRequires:  gcc
+BuildRequires:  gnupg2
 BuildRequires:  meson >= 0.54.0
 # FIXME: wlroots require `pkgconfig(egl)`, but assumes mesa provides it
 # (and uses it's extension header `<EGL/eglmesaext.h>).
 # Upstream is working on not needing that: https://github.com/swaywm/wlroots/issues/1899
 # Until it is fixed, pull mesa-libEGL-devel manually
-BuildRequires:  pkgconfig(egl) mesa-libEGL-devel
-BuildRequires:  pkgconfig(freerdp2)
+BuildRequires:  (mesa-libEGL-devel if libglvnd-devel < 1:1.3.2)
+BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(gbm) >= 17.1.0
 BuildRequires:  pkgconfig(glesv2)
-BuildRequires:  pkgconfig(libcap)
 BuildRequires:  pkgconfig(libdrm) >= 2.4.95
 BuildRequires:  pkgconfig(libinput) >= 1.9.0
+BuildRequires:  pkgconfig(libsystemd) >= 237
 BuildRequires:  pkgconfig(libudev)
 BuildRequires:  pkgconfig(pixman-1)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.17
+BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wayland-server) >= 1.18
-BuildRequires:  pkgconfig(winpr2)
+BuildRequires:  pkgconfig(x11-xcb)
+BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-icccm)
 BuildRequires:  pkgconfig(xkbcommon)
 
-# only select examples are supported for being readily compilable (see SOURCE1)
+# only select examples are supported for being readily compilable (see SOURCE3)
 %global examples \
     cat multi-pointer output-layout pointer rotation screencopy simple tablet touch
 
@@ -56,11 +63,13 @@ BuildRequires:  pkgconfig(xkbcommon)
 %package        devel
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} == %{version}-%{release}
+# FIXME: See the rationale above for this require; remove when no longer needed
+Requires:       (mesa-libEGL-devel if libglvnd-devel < 1:1.3.2)
 # not required per se, so not picked up automatically by RPM
 Recommends:     pkgconfig(xcb-icccm)
 # for examples
 Suggests:       gcc
-Suggests:       meson >= 0.48.0
+Suggests:       meson >= 0.51.2
 Suggests:       pkgconfig(libpng)
 
 %description    devel
@@ -68,12 +77,26 @@ Development files for %{name}.
 
 
 %prep
-%setup -q -n %{name}-%{commit}
+%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
+%autosetup -p1
 
 
 %build
-# Disable options requiring extra/unpackaged dependencies
-%{meson} -Dexamples=false -Dlogind-provider=systemd -Dxcb-errors=disabled
+MESON_OPTIONS=(
+    # Disable options requiring extra/unpackaged dependencies
+    -Dexamples=false
+    -Dxcb-errors=disabled
+    -Dlibseat=disabled
+    # select systemd logind provider
+    -Dlogind-provider=systemd
+
+%ifarch s390x
+    # Disable -Werror on s390x: https://github.com/swaywm/wlroots/issues/2018
+    -Dwerror=false
+%endif
+)
+
+%{meson} "${MESON_OPTIONS[@]}"
 %{meson_build}
 
 
@@ -84,6 +107,7 @@ EXAMPLES=( %{examples} )  # Normalize whitespace by creating an array
 for example in "${EXAMPLES[@]}"; do
     install -pm0644 -Dt '%{buildroot}/%{_pkgdocdir}/examples' examples/"${example}".[ch]
 done
+install -pm0644 -D '%{SOURCE3}' '%{buildroot}/%{_pkgdocdir}/examples/meson.build'
 
 
 %check
@@ -105,8 +129,33 @@ done
 
 
 %changelog
-* Wed Jun 10 2020 Jarkko Oranen <oranenj@iki.fi> - 0.10.2-0
-- git master
+* Sun Nov 08 2020 Aleksei Bavshin <alebastr@fedoraproject.org> - 0.12.0-1
+- Updated to version 0.12.0
+
+* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.11.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Wed Jul 15 2020 Aleksei Bavshin <alebastr89@gmail.com> - 0.11.0-1
+- Updated to version 0.11.0
+
+* Sat May 09 2020 Till Hofmann <thofmann@fedoraproject.org> - 0.10.1-2
+- Add patch from upstream #2167 to fix #1829212
+
+* Tue Mar 24 2020 Nikhil Jha <hi@nikhiljha.com> - 0.10.1-1
+- Updated to version 0.10.1 (https://github.com/swaywm/wlroots/releases/tag/0.10.1)
+
+* Mon Feb 10 2020 Jan Staněk <jstanek@redhat.com> - 0.10.0-6
+- Propagate mesa-libEGL-devel workaround to -devel requirements
+
+* Sat Feb 08 2020 Simone Caronni <negativo17@gmail.com> - 0.10.0-5
+- RDP backend is no longer in wlroots 0.10.
+
+* Fri Feb 07 2020 Simone Caronni <negativo17@gmail.com> - 0.10.0-4
+- Rebuild for updated FreeRDP.
+
+* Tue Feb 04 2020 Jan Staněk <jstanek@redhat.com> - 0.10.0-3
+- Disable -Werror compilation flag on s390x
+  (https://github.com/swaywm/wlroots/issues/2018)
 
 * Wed Jan 29 2020 Jan Staněk <jstanek@redhat.com> - 0.10.0-2
 - Backport fix for compilation with GCC 10
