@@ -1,11 +1,11 @@
 %define git_owner       oranenj
 %define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          3c5cc168c847b9ed93f41c3d51ecfd4e061dcadd
+%define commit          0e866013b69e5f63d0676777b88fe37241a369a4
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 
 Name:           sway
-Version:        1.5
-Release:        1.git%{abbrev}%{?dist}
+Version:        1.6
+Release:        0.20201113git%{abbrev}%{?dist}
 Summary:        i3-compatible window manager for Wayland
 License:        MIT
 URL:            %{git_url}
@@ -34,7 +34,7 @@ BuildRequires:  pkgconfig(wayland-cursor)
 BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.14
-BuildRequires:  pkgconfig(wlroots) >= 0.11.0
+BuildRequires:  pkgconfig(wlroots) >= 0.12.0
 BuildRequires:  wayland-devel
 BuildRequires:  libevdev-devel
 BuildRequires:  git
