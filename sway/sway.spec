@@ -5,7 +5,7 @@
 
 Name:           sway
 Version:        1.5.1
-Release:        0.20201113git%{abbrev}%{?dist}
+Release:        0.1.git%{abbrev}%{?dist}
 Summary:        i3-compatible window manager for Wayland
 License:        MIT
 URL:            %{git_url}
