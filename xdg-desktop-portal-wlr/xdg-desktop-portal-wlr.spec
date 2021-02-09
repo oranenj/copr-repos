@@ -18,6 +18,7 @@ BuildRequires:  pkgconfig(libpipewire-0.3) >= 0.2.9
 BuildRequires:  pkgconfig(libsystemd)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.14
+BuildRequires:  iniparser-devel
 
 
 %description
