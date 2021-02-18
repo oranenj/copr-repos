@@ -1,6 +1,6 @@
 %define git_owner       columbarius
 %define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          023a66c32404887e949ccfc4f0d041be849d446c
+%define commit          c25725df85e23762891ff025129d67b0c0439bd1
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 Name:           xdg-desktop-portal-wlr
 Summary:        xdg-desktop-portal backend for wlroots
@@ -8,7 +8,7 @@ License:        MIT
 Release:        1
 URL:            %{git_url}
 
-Version:        0.2.0
+Version:        0.2.1
 Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.gz
 
 BuildRequires:  gcc
