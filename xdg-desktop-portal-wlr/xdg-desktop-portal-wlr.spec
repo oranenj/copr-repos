@@ -29,7 +29,7 @@ xdg-desktop-portal backend for wlroots
 
 
 %build
-%meson -Dsd_bus_provider=libsystemd
+%meson -Dsd-bus-provider=libsystemd
 %meson_build
 
 
