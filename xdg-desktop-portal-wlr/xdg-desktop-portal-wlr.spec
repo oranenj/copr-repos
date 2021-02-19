@@ -1,6 +1,6 @@
-%define git_owner       oranenj
+%define git_owner       columbarius
 %define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          4ecb1aa27e71d8609fb073e8c4bc3945fccd71ef
+%define commit          d0179d30228e40601e6b26833718e152a4de5bb6
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 Name:           xdg-desktop-portal-wlr
 Summary:        xdg-desktop-portal backend for wlroots
