@@ -1,14 +1,14 @@
-%define git_owner       columbarius
+%define git_owner       oranenj
 %define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          d0179d30228e40601e6b26833718e152a4de5bb6
+%define commit          05a3f3fdec997cf3e3c5dee39aeaa32159ed4b70
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 Name:           xdg-desktop-portal-wlr
 Summary:        xdg-desktop-portal backend for wlroots
 License:        MIT
-Release:        1
+Release:        1.20210311git%{abbrev}
 URL:            %{git_url}
 
-Version:        0.2.1
+Version:        0.2.0
 Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.gz
 
 BuildRequires:  gcc
