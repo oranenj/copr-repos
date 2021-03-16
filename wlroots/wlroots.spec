@@ -22,8 +22,6 @@ Summary:        A modular Wayland compositor library
 License:        MIT
 URL:            https://github.com/swaywm/%{name}
 Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.gz
-#Source0:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz
-#Source1:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz.sig
 # 0FDE7BE0E88F5E48: emersion <contact@emersion.fr>
 #Source2:        https://emersion.fr/.well-known/openpgpkey/hu/dj3498u4hyyarh35rkjfnghbjxug6b19#/gpgkey-0FDE7BE0E88F5E48.gpg
 
@@ -85,7 +83,6 @@ Development files for %{name}.
 
 
 %prep
-#%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %autosetup -p1 -N -n %{name}-%{commit}
 
 
