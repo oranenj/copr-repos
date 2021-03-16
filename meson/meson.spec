@@ -1,24 +1,30 @@
 %global libname mesonbuild
 
+# Don’t run the tests by default, since they are rather flaky.
+# I’ll get to getting them running eventually, but free time is sparse.
+# — ekulik
 %bcond_with check
 
 Name:           meson
-Version:        0.48.1
+Version:        0.57.1
 Release:        1%{?dist}
 Summary:        High productivity build system
 
 License:        ASL 2.0
-URL:            http://mesonbuild.com/
-Source0:        https://github.com/mesonbuild/meson/archive/%{version}/%{name}-%{version}.tar.gz
+URL:            https://mesonbuild.com/
+Source:         https://github.com/mesonbuild/meson/releases/download/%{version_no_tilde .}/meson-%{version_no_tilde %{quote:}}.tar.gz
 
 BuildArch:      noarch
-Obsoletes:      %{name}-gui < 0.31.0-3
 
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
-Requires:       python3-setuptools
+Requires:       python%{python3_version}dist(setuptools)
+Requires:       ninja-build
+
 %if %{with check}
 BuildRequires:  ninja-build
+# Some tests expect the unversioned executable
+BuildRequires:  /usr/bin/python
 # Various languages
 BuildRequires:  gcc
 BuildRequires:  libasan
@@ -27,6 +33,7 @@ BuildRequires:  gcc-gfortran
 BuildRequires:  gcc-objc
 BuildRequires:  gcc-objc++
 BuildRequires:  java-devel
+BuildRequires:  libomp-devel
 BuildRequires:  mono-core mono-devel
 BuildRequires:  rust
 # Since the build is noarch, we can't use %%ifarch
@@ -38,6 +45,8 @@ BuildRequires:  boost-devel
 BuildRequires:  gtest-devel
 BuildRequires:  gmock-devel
 BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-private-devel
+BuildRequires:  qt5-linguist
 BuildRequires:  vala
 BuildRequires:  python3-gobject-base
 BuildRequires:  wxGTK3-devel
@@ -54,14 +63,14 @@ BuildRequires:  pkgconfig(gobject-introspection-1.0)
 BuildRequires:  gtk-doc
 BuildRequires:  itstool
 BuildRequires:  pkgconfig(zlib)
-BuildRequires:  python%{python3_pkgversion}-Cython
+BuildRequires:  zlib-static
+BuildRequires:  python3dist(cython)
 BuildRequires:  pkgconfig(sdl2)
 BuildRequires:  %{_bindir}/pcap-config
 BuildRequires:  pkgconfig(vulkan)
 BuildRequires:  llvm-devel
 BuildRequires:  cups-devel
 %endif
-Requires:       ninja-build
 
 %description
 Meson is a build system designed to optimize programmer
@@ -70,9 +79,7 @@ support for modern software development tools and practices, such as
 unit tests, coverage reports, Valgrind, CCache and the like.
 
 %prep
-%autosetup -p1
-# Remove MPI tests for now because it is complicated to run
-rm -rf "test cases/frameworks/17 mpi"
+%autosetup -p1 -n meson-%{version_no_tilde %{quote:}}
 # Macro should not change when we are redefining bindir
 sed -i -e "/^%%__meson /s| .*$| %{_bindir}/%{name}|" data/macros.%{name}
 
@@ -81,10 +88,14 @@ sed -i -e "/^%%__meson /s| .*$| %{_bindir}/%{name}|" data/macros.%{name}
 
 %install
 %py3_install
-install -Dpm0644 data/macros.%{name} %{buildroot}%{rpmmacrodir}/macros.%{name}
+install -Dpm0644 -t %{buildroot}%{rpmmacrodir} data/macros.%{name}
 
 %if %{with check}
 %check
+# Remove Boost tests for now, because it requires Python 2
+rm -rf "test cases/frameworks/1 boost"
+# Remove MPI tests for now because it is complicated to run
+rm -rf "test cases/frameworks/17 mpi"
 export MESON_PRINT_TEST_OUTPUT=1
 %{__python3} ./run_tests.py
 %endif
@@ -101,6 +112,126 @@ export MESON_PRINT_TEST_OUTPUT=1
 %{_datadir}/polkit-1/actions/com.mesonbuild.install.policy
 
 %changelog
+* Fri Mar 05 2021 Igor Raits <ignatenkobrain@fedoraproject.org> - 0.57.1-1
+- Update to 0.57.1
+
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.56.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
+* Thu Jan 21 2021 Kalev Lember <klember@redhat.com> - 0.56.2-1
+- Update to 0.56.2
+
+* Tue Nov 10 2020 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 0.56.0-1
+- Update to latest version (#1889242)
+
+* Fri Nov 06 2020 Jeff Law <law@redhat.com> - 0.55.3-2
+- Avoid bogus volatile in gnome modules support code caught by gcc-11
+
+* Fri Sep 11 2020 Kalev Lember <klember@redhat.com> - 0.55.3-1
+- Update to 0.55.3
+
+* Thu Sep 10 2020 Kalev Lember <klember@redhat.com> - 0.55.2-1
+- Update to 0.55.2
+
+* Thu Aug 20 2020 Kalev Lember <klember@redhat.com> - 0.55.1-1
+- Update to 0.55.1
+
+* Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.55.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Sun Jul 12 2020 Igor Raits <ignatenkobrain@fedoraproject.org> - 0.55.0-1
+- Update to 0.55.0
+
+* Mon Jul 06 2020 Igor Raits <ignatenkobrain@fedoraproject.org> - 0.55.0~rc2-1
+- Update to 0.55.0rc2
+
+* Fri Jul 03 2020 Igor Raits <ignatenkobrain@fedoraproject.org> - 0.55.0~rc1-1
+- Update to 0.55.0rc1
+
+* Thu Jun 18 2020 Igor Raits <ignatenkobrain@fedoraproject.org> - 0.54.3-2
+- Use verbose mode for meson compile
+
+* Mon Jun 15 2020 Kalev Lember <klember@redhat.com> - 0.54.3-1
+- Update to 0.54.3
+
+* Mon Jun 15 2020 Igor Raits <ignatenkobrain@fedoraproject.org> - 0.54.2-3
+- Switch to meson compile / meson install
+
+* Fri May 22 2020 Miro Hrončok <mhroncok@redhat.com> - 0.54.2-2
+- Rebuilt for Python 3.9
+
+* Fri May 15 2020 Kalev Lember <klember@redhat.com> - 0.54.2-1
+- Update to 0.54.2
+
+* Thu May 07 2020 Igor Raits <ignatenkobrain@fedoraproject.org> - 0.54.1-1
+- Update to 0.54.1
+
+* Mon Mar 30 2020 - Ernestas Kulik <ekulik@redhat.com> - 0.54.0-1
+- Update to 0.54.0
+
+* Sat Mar 14 2020 - Ernestas Kulik <ekulik@redhat.com> - 0.53.2-1.git88e40c7
+- Update to snapshot of 0.53.2 with D fixes
+
+* Fri Feb 07 2020 - Ernestas Kulik <ekulik@redhat.com> - 0.53.1-1
+- Update to 0.53.1
+
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.52.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Thu Dec 26 2019 Björn Esser <besser82@fedoraproject.org> - 0.52.1-1
+- Update to 0.52.1
+
+* Wed Oct 09 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.52.0-1
+- Update to 0.52.0
+
+* Thu Oct 03 2019 Miro Hrončok <mhroncok@redhat.com> - 0.51.2-2
+- Rebuilt for Python 3.8.0rc1 (#1748018)
+
+* Mon Aug 26 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.51.2-1
+- Update to 0.51.2
+
+* Thu Aug 15 2019 Miro Hrončok <mhroncok@redhat.com> - 0.51.1-3
+- Rebuilt for Python 3.8
+
+* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.51.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Wed Jul 10 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.51.1-1
+- Update to 0.51.1
+
+* Mon Jun 17 10:03:21 CEST 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.51.0-1
+- Update to 0.51
+
+* Wed Apr 17 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.50.1-1
+- Update to 0.50.1
+
+* Mon Apr 15 2019 Adam Williamson <awilliam@redhat.com> - 0.50.0-4
+- Backport patch to revert ld binary method change (#1699099)
+
+* Mon Apr 08 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.50.0-3
+- Drop -Db_ndebug=true and just fix it instead
+
+* Mon Mar 25 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.50.0-2
+- Set -Db_ndebug=true
+
+* Sun Mar 10 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.50.0-1
+- Update to 0.50.0
+
+* Mon Feb 04 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.49.2-1
+- Update to 0.49.2
+
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.49.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Wed Jan 23 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.49.1-1
+- Update to 0.49.1
+
+* Sun Dec 09 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.49.0-1
+- Update to 0.49.0
+
+* Sat Nov 17 2018 Kalev Lember <klember@redhat.com> - 0.48.2-1
+- Update to 0.48.2
+
 * Sun Oct 21 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.48.1-1
 - Update to 0.48.1
 
