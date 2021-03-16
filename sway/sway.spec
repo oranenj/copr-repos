@@ -61,7 +61,7 @@ i3-compatible configuration.
 %setup -q -n %{name}-%{commit}
 
 %build
-%meson
+%meson -Dsd-bus-provider=libsystemd
 %meson_build
 
 %install
