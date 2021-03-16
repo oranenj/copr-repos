@@ -56,6 +56,7 @@ BuildRequires:  pkgconfig(wayland-server) >= 1.19
 BuildRequires:  pkgconfig(x11-xcb)
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-icccm)
+BuildRequires:  pkgconfig(xcb-renderutil)
 BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  pkgconfig(uuid)
 
