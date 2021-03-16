@@ -1,20 +1,21 @@
 Name:           wayland
-Version:        1.16.0
+Version:        1.19.0
 Release:        1%{?dist}
 Summary:        Wayland Compositor Infrastructure
 
 License:        MIT
-URL:            https://wayland.freedesktop.org/
-Source0:        https://wayland.freedesktop.org/releases/%{name}-%{version}.tar.xz
+URL:            http://wayland.freedesktop.org/
+Source0:        http://wayland.freedesktop.org/releases/%{name}-%{version}.tar.xz
 
 BuildRequires:  gcc
-BuildRequires:  chrpath
+BuildRequires:  gcc-c++
 BuildRequires:  docbook-style-xsl
 BuildRequires:  doxygen
 BuildRequires:  expat-devel
 BuildRequires:  graphviz
 BuildRequires:  libxml2-devel
 BuildRequires:  libxslt
+BuildRequires:  meson
 BuildRequires:  pkgconfig(libffi)
 BuildRequires:  xmlto
 
@@ -31,18 +32,6 @@ Requires:       libwayland-client%{?_isa} = %{version}-%{release}
 Requires:       libwayland-cursor%{?_isa} = %{version}-%{release}
 Requires:       libwayland-egl%{?_isa} = %{version}-%{release}
 Requires:       libwayland-server%{?_isa} = %{version}-%{release}
-# For upgrade path from F24
-Provides:       libwayland-client-devel = %{version}-%{release}
-Obsoletes:      libwayland-client-devel < 1.11.91
-Provides:       libwayland-cursor-devel = %{version}-%{release}
-Obsoletes:      libwayland-cursor-devel < 1.11.91
-Provides:       libwayland-server-devel = %{version}-%{release}
-Obsoletes:      libwayland-server-devel < 1.11.91
-# For upgrade path from F27
-Provides:       libwayland-egl-devel = %{version}-%{release}
-Provides:       mesa-libwayland-egl-devel = %{version}-%{release}
-Provides:       mesa-libwayland-egl-devel%{?_isa} = %{version}-%{release}
-Obsoletes:      mesa-libwayland-egl-devel < 18.1.0
 
 %description    devel
 The %{name}-devel package contains libraries and header files for
@@ -66,11 +55,6 @@ Wayland cursor library
 
 %package -n libwayland-egl
 Summary: Wayland egl library
-# For upgrade path from F27
-Provides:       mesa-libwayland-egl = %{version}-%{release}
-Provides:       mesa-libwayland-egl%{?_isa} = %{version}-%{release}
-Obsoletes:      mesa-libwayland-egl < 18.1.0
-
 %description -n libwayland-egl
 Wayland egl library
 
@@ -83,21 +67,14 @@ Wayland server library
 %autosetup -p1
 
 %build
-%configure --disable-static --enable-documentation
-make %{?_smp_mflags}
+%meson
+%meson_build
 
 %install
-%make_install
-
-find $RPM_BUILD_ROOT -name \*.la | xargs rm -f
-
-# Remove lib64 rpaths
-chrpath -d $RPM_BUILD_ROOT%{_libdir}/libwayland-cursor.so
+%meson_install
 
 %check
-mkdir -m 700 tests/run
-XDG_RUNTIME_DIR=$PWD/tests/run make check || \
-{ rc=$?; cat test-suite.log; exit $rc; }
+%meson_test
 
 %files devel
 %{_bindir}/wayland-scanner
@@ -112,7 +89,7 @@ XDG_RUNTIME_DIR=$PWD/tests/run make check || \
 %{_mandir}/man3/*.3*
 
 %files doc
-%doc README TODO
+%doc README
 %{_datadir}/doc/wayland/
 
 %files -n libwayland-client
@@ -132,6 +109,39 @@ XDG_RUNTIME_DIR=$PWD/tests/run make check || \
 %{_libdir}/libwayland-server.so.0*
 
 %changelog
+* Thu Jan 28 2021 Kalev Lember <klember@redhat.com> - 1.19.0-1
+- Update to 1.19.0
+- Switch to meson build system
+- Drop old provides
+
+* Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.18.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
+* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.18.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Wed Feb 12 2020 Kalev Lember <klember@redhat.com> - 1.18.0-1
+- Update to 1.18.0
+- Drop no longer needed obsoletes/provides
+
+* Fri Jan 31 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.17.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Sat Jul 27 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.17.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Thu Mar 21 2019 Kalev Lember <klember@redhat.com> - 1.17.0-1
+- Update to 1.17.0
+
+* Thu Mar 07 2019 Kalev Lember <klember@redhat.com> - 1.16.92-1
+- Update to 1.16.92
+
+* Thu Feb 28 2019 Kalev Lember <klember@redhat.com> - 1.16.91-1
+- Update to 1.16.91
+
+* Sun Feb 03 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.16.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Tue Sep 11 2018 Kalev Lember <klember@redhat.com> - 1.16.0-1
 - Update to 1.16.0
 
