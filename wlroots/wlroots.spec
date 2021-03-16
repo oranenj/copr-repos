@@ -34,7 +34,7 @@ Source3:        examples.meson.build
 
 BuildRequires:  gcc
 BuildRequires:  gnupg2
-BuildRequires:  meson >= 0.54.0
+BuildRequires:  meson >= 0.56.0
 # FIXME: wlroots require `pkgconfig(egl)`, but assumes mesa provides it
 # (and uses it's extension header `<EGL/eglmesaext.h>).
 # Upstream is working on not needing that: https://github.com/swaywm/wlroots/issues/1899
@@ -52,7 +52,7 @@ BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.17
 BuildRequires:  pkgconfig(wayland-scanner)
-BuildRequires:  pkgconfig(wayland-server) >= 1.19
+BuildRequires:  pkgconfig(wayland-server) >= 1.18
 BuildRequires:  pkgconfig(x11-xcb)
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-icccm)
@@ -85,7 +85,8 @@ Development files for %{name}.
 %prep
 #%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %autosetup -p1 -N -n %{name}-%{commit}
-
+echo sed -i %{buildroot}/%{name}-%{commit}/types/seat/wlr_seat.c 's/WL_SEAT_ERROR_MISSING_CAPABILITY/0/g' %{buildroot}/types/seat/wlr_seat.c
+sed -i %{buildroot}/%{name}-%{commit}/types/seat/wlr_seat.c 's/WL_SEAT_ERROR_MISSING_CAPABILITY/0/g' %{buildroot}/types/seat/wlr_seat.c
 
 %build
 MESON_OPTIONS=(
