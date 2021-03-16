@@ -57,6 +57,7 @@ BuildRequires:  pkgconfig(xcb-icccm)
 BuildRequires:  pkgconfig(xcb-renderutil)
 BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  pkgconfig(uuid)
+BuildRequires:  xorg-x11-server-Xwayland
 
 # only select examples are supported for being readily compilable (see SOURCE3)
 %global examples \
