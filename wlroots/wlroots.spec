@@ -3,8 +3,6 @@
 %define commit          c740fccc9dd0913908c0632c10f8c6d10b2b1ca4
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 
-Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.gz
-
 # Version of the .so library
 %global abi_ver 7
 
