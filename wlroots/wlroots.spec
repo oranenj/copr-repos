@@ -1,6 +1,6 @@
 %define git_owner       swaywm
 %define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          c740fccc9dd0913908c0632c10f8c6d10b2b1ca4
+%define commit          b89bcffea4fccdf4727f65b58576ba05903daa75
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 
 # Version of the .so library
@@ -8,7 +8,7 @@
 
 Name:           wlroots
 Version:        0.12.0
-Release:        5.20210316git%{abbrev}%{?dist}
+Release:        5.20210328git%{abbrev}%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Source files/overall project licensed as MIT, but
