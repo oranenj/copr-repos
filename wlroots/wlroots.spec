@@ -4,11 +4,11 @@
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 
 # Version of the .so library
-%global abi_ver 7
+%global abi_ver 8
 
 Name:           wlroots
-Version:        0.12.0
-Release:        5.20210328git%{abbrev}%{?dist}
+Version:        0.13.0
+Release:        1%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Source files/overall project licensed as MIT, but
@@ -21,9 +21,10 @@ Summary:        A modular Wayland compositor library
 # the underlying licenses.
 License:        MIT
 URL:            https://github.com/swaywm/%{name}
-Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.gz
+Source0:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz
+Source1:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz.sig
 # 0FDE7BE0E88F5E48: emersion <contact@emersion.fr>
-#Source2:        https://emersion.fr/.well-known/openpgpkey/hu/dj3498u4hyyarh35rkjfnghbjxug6b19#/gpgkey-0FDE7BE0E88F5E48.gpg
+Source2:        https://emersion.fr/.well-known/openpgpkey/hu/dj3498u4hyyarh35rkjfnghbjxug6b19#/gpgkey-0FDE7BE0E88F5E48.gpg
 
 # this file is a modification of examples/meson.build so as to:
 # - make it self-contained
@@ -33,11 +34,6 @@ Source3:        examples.meson.build
 BuildRequires:  gcc
 BuildRequires:  gnupg2
 BuildRequires:  meson >= 0.56.0
-# FIXME: wlroots require `pkgconfig(egl)`, but assumes mesa provides it
-# (and uses it's extension header `<EGL/eglmesaext.h>).
-# Upstream is working on not needing that: https://github.com/swaywm/wlroots/issues/1899
-# Until it is fixed, pull mesa-libEGL-devel manually
-BuildRequires:  (mesa-libEGL-devel if libglvnd-devel < 1:1.3.2)
 BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(gbm) >= 17.1.0
 BuildRequires:  pkgconfig(glesv2)
@@ -46,6 +42,7 @@ BuildRequires:  pkgconfig(libinput) >= 1.14.0
 BuildRequires:  pkgconfig(libsystemd) >= 237
 BuildRequires:  pkgconfig(libudev)
 BuildRequires:  pkgconfig(pixman-1)
+BuildRequires:  pkgconfig(uuid)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.17
@@ -56,8 +53,7 @@ BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-icccm)
 BuildRequires:  pkgconfig(xcb-renderutil)
 BuildRequires:  pkgconfig(xkbcommon)
-BuildRequires:  pkgconfig(uuid)
-BuildRequires:  xorg-x11-server-Xwayland
+BuildRequires:  pkgconfig(xwayland)
 
 # only select examples are supported for being readily compilable (see SOURCE3)
 %global examples \
@@ -70,8 +66,6 @@ BuildRequires:  xorg-x11-server-Xwayland
 %package        devel
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} == %{version}-%{release}
-# FIXME: See the rationale above for this require; remove when no longer needed
-Requires:       (mesa-libEGL-devel if libglvnd-devel < 1:1.3.2)
 # not required per se, so not picked up automatically by RPM
 Recommends:     pkgconfig(xcb-icccm)
 # for examples
@@ -84,7 +78,8 @@ Development files for %{name}.
 
 
 %prep
-%autosetup -p1 -N -n %{name}-%{commit}
+%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
+%autosetup -p1
 
 
 %build
@@ -135,6 +130,12 @@ install -pm0644 -D '%{SOURCE3}' '%{buildroot}/%{_pkgdocdir}/examples/meson.build
 
 
 %changelog
+* Wed Apr 07 2021 Aleksei Bavshin <alebastr@fedoraproject.org> - 0.13.0-1
+- Update to 0.13.0 (#1947218)
+
+* Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.12.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Sun Nov 08 2020 Aleksei Bavshin <alebastr@fedoraproject.org> - 0.12.0-1
 - Updated to version 0.12.0
 
