@@ -4,52 +4,60 @@
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 
 Name:           sway
-Version:        1.6.0rc2
-Release:        0.20210328git%{abbrev}%{?dist}
+Version:        1.6
+Release:        1%{?dist}
 Summary:        i3-compatible window manager for Wayland
 License:        MIT
-URL:            %{git_url}
-Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.gz
+URL:            https://github.com/swaywm/sway
+Source0:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz
+Source1:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz.sig
+# 0FDE7BE0E88F5E48: emersion <contact@emersion.fr>
+Source2:        https://emersion.fr/.well-known/openpgpkey/hu/dj3498u4hyyarh35rkjfnghbjxug6b19#/gpgkey-0FDE7BE0E88F5E48.gpg
 
-# FIXME: wlroots require `pkgconfig(egl)`, but assumes mesa provides it
-# (and uses it's extension header `<EGL/eglmesaext.h>).
-# Upstream is working on not needing that: https://github.com/swaywm/wlroots/issues/1899
-# Until it is fixed, pull mesa-libEGL-devel manually
-BuildRequires:  pkgconfig(egl) mesa-libEGL-devel
-BuildRequires:  cmake
 BuildRequires:  gcc-c++
-BuildRequires:  make
-BuildRequires:  meson >= 0.48.0
-BuildRequires:  pam-devel
+BuildRequires:  gnupg2
+BuildRequires:  meson >= 0.53.0
 BuildRequires:  pkgconfig(cairo)
-BuildRequires:  pkgconfig(dbus-1)
 BuildRequires:  pkgconfig(gdk-pixbuf-2.0)
 BuildRequires:  pkgconfig(json-c) >= 0.13
-BuildRequires:  pkgconfig(libcap)
+BuildRequires:  pkgconfig(libdrm)
+BuildRequires:  pkgconfig(libevdev)
 BuildRequires:  pkgconfig(libinput) >= 1.6.0
 BuildRequires:  pkgconfig(libpcre)
+BuildRequires:  pkgconfig(libsystemd) >= 239
+BuildRequires:  pkgconfig(libudev)
 BuildRequires:  pkgconfig(pango)
+BuildRequires:  pkgconfig(pangocairo)
+BuildRequires:  pkgconfig(scdoc)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-cursor)
 BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.14
-BuildRequires:  pkgconfig(wlroots) >= 0.12.0
-BuildRequires:  wayland-devel
-BuildRequires:  libevdev-devel
-BuildRequires:  git
-BuildRequires:  scdoc
+BuildRequires:  pkgconfig(wlroots) >= 0.13.0
+BuildRequires:  pkgconfig(xcb)
+BuildRequires:  pkgconfig(xkbcommon)
 # Dmenu is the default launcher in sway
 Recommends:     dmenu
+# In addition, xargs is recommended for use in such a launcher arrangement
+Recommends:     findutils
+# Install configs and scripts for better integration with systemd user session
+Recommends:     sway-systemd
 
 Requires:       swaybg
 # By default the Fedora background is used
-Recommends:     f%{fedora}-backgrounds-base
+Recommends:     desktop-backgrounds-compat
+
+# Lack of graphical drivers may hurt the common use case
+Recommends:     mesa-dri-drivers
+# Minimal installation doesn't include Qt Wayland backend
+Recommends:     (qt5-qtwayland if qt5-qtbase-gui)
+Recommends:     (qt6-qtwayland if qt6-qtbase-gui)
 
 # dmenu (as well as rxvt any many others) requires XWayland on Sway
 Requires:       xorg-x11-server-Xwayland
-# Sway binds the terminal shortcut to one specific terminal. In our case urxvtc-ml
-Recommends:     rxvt-unicode-256color-ml
+# Sway binds the terminal shortcut to one specific terminal. In our case alacritty
+Recommends:     alacritty
 # grim is the recommended way to take screenshots on sway 1.0+
 Recommends:     grim
 
@@ -57,26 +65,46 @@ Recommends:     grim
 Sway is a tiling window manager supporting Wayland compositor protocol and
 i3-compatible configuration.
 
+%package -n     grimshot
+Summary:        Helper for screenshots within sway
+Requires:       grim
+Requires:       jq
+Requires:       slurp
+Requires:       /usr/bin/wl-copy
+Recommends:     /usr/bin/notify-send
+
+%description -n grimshot
+Grimshot is an easy to use screenshot tool for sway. It relies on grim,
+slurp and jq to do the heavy lifting, and mostly provides an easy to use
+interface.
+
 %prep
-%setup -q -n %{name}-%{commit}
+%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
+%autosetup -p1
 
 %build
-%meson -Dsd-bus-provider=libsystemd
+%meson \
+    -Dsd-bus-provider=libsystemd
 %meson_build
 
 %install
 %meson_install
-# Set default terminal to urxvt256c-ml
-sed -i 's/^set $term urxvt$/set \$term urxvt256c-ml/' %{buildroot}%{_sysconfdir}/sway/config
 # Set Fedora background as default background
-sed -i "s|^output \* bg .*|output * bg /usr/share/backgrounds/f%{fedora}/default/normalish/f%{fedora}.png fill|" %{buildroot}%{_sysconfdir}/sway/config
+sed -i "s|^output \* bg .*|output * bg /usr/share/backgrounds/default.png fill|" %{buildroot}%{_sysconfdir}/sway/config
+# Create directory for extra config snippets
+install -d -m755 -pv %{buildroot}%{_sysconfdir}/sway/config.d
+
+# install contrib/grimshot tool
+scdoc <contrib/grimshot.1.scd >%{buildroot}%{_mandir}/man1/grimshot.1
+install -D -m755 -pv contrib/grimshot %{buildroot}%{_bindir}/grimshot
 
 %files
 %license LICENSE
 %doc README.md
 %dir %{_sysconfdir}/sway
+%dir %{_sysconfdir}/sway/config.d
 %config(noreplace) %{_sysconfdir}/sway/config
-%{_mandir}/man1/*
+%{_mandir}/man1/sway*
 %{_mandir}/man5/*
 %{_mandir}/man7/*
 %{_bindir}/sway
@@ -95,9 +123,48 @@ sed -i "s|^output \* bg .*|output * bg /usr/share/backgrounds/f%{fedora}/default
 %{_datadir}/fish/vendor_completions.d/sway*
 %{_datadir}/backgrounds/sway
 
+%files -n grimshot
+%{_bindir}/grimshot
+%{_mandir}/man1/grimshot.1*
+
 %changelog
-* Sun May 31 2020 Jarkko Oranen <oranenj@iki.fi> - 1.5-0.git0dca7f1
-- Rebase on sway master
+* Wed Apr 07 2021 Aleksei Bavshin <alebastr@fedoraproject.org> - 1.6-1
+- Update to 1.6 (#1939820)
+
+* Sat Feb 20 2021 Aleksei Bavshin <alebastr@fedoraproject.org> - 1.5.1-3
+- Recommend wayland backend for Qt
+- Add subpackage for contrib/grimshot screenshot tool
+- Add 'Recommend: sway-systemd'
+
+* Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.5.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
+* Tue Nov 10 2020 Aleksei Bavshin <alebastr@fedoraproject.org> - 1.5.1-1
+- Update to 1.5.1
+
+* Thu Oct 22 2020 Aleksei Bavshin <alebastr@fedoraproject.org> - 1.5-3
+- Remove default terminal patching; alacritty is avaliable in Fedora (#1830595)
+
+* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.5-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Wed Jul 15 2020 Aleksei Bavshin <alebastr89@gmail.com> - 1.5-1
+- Update to 1.5
+- Fix urxvt256c-ml dependency for f32+
+- Add source verification
+- Cleanup build dependencies
+
+* Sat May 30 2020 Jan Pokorný <jpokorny@fedoraproject.org> 1.4-7
+- Enhance greenfield readiness with optional pull of default driver set & xargs
+
+* Thu Apr 30 2020 Aleksei Bavshin <alebastr89@gmail.com> - 1.4-6
+- Add patch for layer-shell popups layer (#1829130)
+
+* Tue Apr 21 2020 Björn Esser <besser82@fedoraproject.org> - 1.4-5
+- Rebuild (json-c)
+
+* Wed Feb 26 2020 Aleksei Bavshin <alebastr89@gmail.com> - 1.4-4
+- Fix default terminal and background
 
 * Sun Feb 09 2020 Till Hofmann <thofmann@fedoraproject.org> - 1.4-3
 - Add patch to fix strcmp on nullptr (upstream PR #4991)
