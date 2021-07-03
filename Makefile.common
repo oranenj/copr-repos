@@ -1,0 +1,21 @@
+PACKAGE=$(shell basename $(PWD))
+build: $(PACKAGE).spec git_auto
+	copr build-package --name $(PACKAGE) $(PROJECT)
+
+git_auto:
+	git commit -am "Autocommit" || true
+	git push
+
+sync: source
+	wget https://src.fedoraproject.org/rpms/$(PACKAGE)/raw/rawhide/f/$(PACKAGE).spec -O ${PACKAGE}-fedora.spec
+	mv "$(PACKAGE)-fedora.spec" "$(PACKAGE).spec"
+	git add -p
+
+source: $(SOURCE)
+
+$(SOURCE):
+	wget -O "$@" "https://src.fedoraproject.org/rpms/$(PACKAGE)/raw/rawhide/f/$@"
+
+	
+
+.PHONY: git_auto build sync
