@@ -20,8 +20,8 @@ Summary:        A modular Wayland compositor library
 # the main license of the binaries linking with them by
 # the underlying licenses.
 License:        MIT
-URL:            https://github.com/swaywm/%{name}
-Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.gz
+URL:            https://gitlab.freedesktop.org/wlroots/%{name}
+Source0:        %{git_url}/-/archive/%{commit}/%{name}-%{abbrev}.tar.gz
 
 # this file is a modification of examples/meson.build so as to:
 # - make it self-contained
