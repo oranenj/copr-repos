@@ -1,6 +1,6 @@
 %define git_owner       swaywm
 %define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          d8ca4945581577f570c02ad46878571c48a08c79
+%define commit          8a3026337fd892ac7680ef4a33f5a99b4a896723
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 
 Name:           sway
@@ -80,7 +80,7 @@ interface.
 
 %prep
 ls -lR
-%autosetup -p1 -N -n %{name}-%{abbrev}
+%autosetup -p1 -N -n %{name}-%{commit}
 
 %build
 %meson \
