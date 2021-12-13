@@ -1,14 +1,9 @@
-%define git_owner       swaywm
-%define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          b89bcffea4fccdf4727f65b58576ba05903daa75
-%define abbrev          %(c=%{commit}; echo ${c:0:7})
-
 # Version of the .so library
-%global abi_ver 8
+%global abi_ver 9
 
 Name:           wlroots
-Version:        0.13.0
-Release:        1%{?dist}
+Version:        0.14.1
+Release:        2%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Source files/overall project licensed as MIT, but
@@ -37,15 +32,15 @@ BuildRequires:  meson >= 0.56.0
 BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(gbm) >= 17.1.0
 BuildRequires:  pkgconfig(glesv2)
-BuildRequires:  pkgconfig(libdrm) >= 2.4.95
+BuildRequires:  pkgconfig(libdrm) >= 2.4.105
 BuildRequires:  pkgconfig(libinput) >= 1.14.0
+BuildRequires:  pkgconfig(libseat)
 BuildRequires:  pkgconfig(libsystemd) >= 237
 BuildRequires:  pkgconfig(libudev)
 BuildRequires:  pkgconfig(pixman-1)
-BuildRequires:  pkgconfig(uuid)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-egl)
-BuildRequires:  pkgconfig(wayland-protocols) >= 1.17
+BuildRequires:  pkgconfig(wayland-protocols) >= 1.21
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wayland-server) >= 1.19
 BuildRequires:  pkgconfig(x11-xcb)
@@ -53,7 +48,7 @@ BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-icccm)
 BuildRequires:  pkgconfig(xcb-renderutil)
 BuildRequires:  pkgconfig(xkbcommon)
-BuildRequires:  xorg-x11-server-Xwayland
+BuildRequires:  pkgconfig(xwayland)
 
 # only select examples are supported for being readily compilable (see SOURCE3)
 %global examples \
@@ -87,10 +82,6 @@ MESON_OPTIONS=(
     # Disable options requiring extra/unpackaged dependencies
     -Dexamples=false
     -Dxcb-errors=disabled
-    -Dlibseat=disabled
-    # select systemd logind provider
-    -Dlogind-provider=systemd
-
 %ifarch s390x
     # Disable -Werror on s390x: https://github.com/swaywm/wlroots/issues/2018
     -Dwerror=false
@@ -130,6 +121,22 @@ install -pm0644 -D '%{SOURCE3}' '%{buildroot}/%{_pkgdocdir}/examples/meson.build
 
 
 %changelog
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.14.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Thu Jul 08 2021 Aleksei Bavshin <alebastr@fedoraproject.org> - 0.14.1-1
+- Update to wlroots 0.14.1
+
+* Wed Jul 07 2021 Aleksei Bavshin <alebastr@fedoraproject.org> - 0.14.0-2
+- Add patch for a few more issues with cursors, multi-GPUs and nouveau
+
+* Wed Jun 23 2021 Aleksei Bavshin <alebastr@fedoraproject.org> - 0.14.0-1
+- Update to 0.14.0
+- Add upstream patch for cursor issues on scaled outputs
+
+* Tue Jun 01 2021 Aleksei Bavshin <alebastr@fedoraproject.org> - 0.13.0-2
+- Enable libseat session backend
+
 * Wed Apr 07 2021 Aleksei Bavshin <alebastr@fedoraproject.org> - 0.13.0-1
 - Update to 0.13.0 (#1947218)
 
