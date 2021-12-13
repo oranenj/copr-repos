@@ -6,7 +6,7 @@
 %bcond_with check
 
 Name:           meson
-Version:        0.57.1
+Version:        0.60.2
 Release:        1%{?dist}
 Summary:        High productivity build system
 
@@ -112,6 +112,45 @@ export MESON_PRINT_TEST_OUTPUT=1
 %{_datadir}/polkit-1/actions/com.mesonbuild.install.policy
 
 %changelog
+* Mon Dec 06 2021 Kalev Lember <klember@redhat.com> - 0.60.2-1
+- Update to 0.60.2
+
+* Fri Nov 12 2021 Neal Gompa <ngompa@fedoraproject.org> - 0.60.1-1
+- Update to 0.60.1
+
+* Thu Oct 28 2021 Kalev Lember <klember@redhat.com> - 0.59.4-1
+- Update to 0.59.4
+
+* Sat Oct 23 2021 Kalev Lember <klember@redhat.com> - 0.59.3-1
+- Update to 0.59.3
+
+* Sat Aug 21 2021 Kalev Lember <klember@redhat.com> - 0.59.1-1
+- Update to 0.59.1
+
+* Tue Aug 17 2021 Adam Williamson <awilliam@redhat.com> - 0.59.0-2
+- Backport PR #9027 to fix a bug that broke some test suites (#1994006)
+
+* Fri Jul 23 2021 Marc-André Lureau <marcandre.lureau@redhat.com> - 0.59.0-1
+- new version
+
+* Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.58.0-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Thu Jun 03 2021 Python Maint <python-maint@redhat.com> - 0.58.0-4
+- Rebuilt for Python 3.10
+
+* Tue May 25 2021 Ondrej Holy <oholy@redhat.com> - 0.58.0-3
+- Backport upstream patch to fix environment variable regression
+
+* Thu May 20 2021 Kalev Lember <klember@redhat.com> - 0.58.0-2
+- Backport upstream patch to fix gtkdoc generation
+
+* Wed May 05 2021 Marc-André Lureau <marcandre.lureau@redhat.com> - 0.58.0-1
+- new version
+
+* Sun Apr 11 2021 Kalev Lember <klember@redhat.com> - 0.57.2-1
+- Update to 0.57.2
+
 * Fri Mar 05 2021 Igor Raits <ignatenkobrain@fedoraproject.org> - 0.57.1-1
 - Update to 0.57.1
 
