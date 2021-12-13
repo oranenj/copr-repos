@@ -1,18 +1,16 @@
 %define git_owner       swaywm
 %define git_url         https://github.com/%{git_owner}/%{name}
-%define commit          a9563a37101e022d5e9c14f8244b1f8a109b4536
+%define commit          d8ca4945581577f570c02ad46878571c48a08c79
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 
 Name:           sway
-Version:        1.6
-Release:        1%{?dist}
+Version:        1.6.1
+Release:        0.20211213git%{abbrev}%{?dist}
 Summary:        i3-compatible window manager for Wayland
 License:        MIT
 URL:            https://github.com/swaywm/sway
-Source0:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz
-Source1:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz.sig
-# 0FDE7BE0E88F5E48: emersion <contact@emersion.fr>
-Source2:        https://emersion.fr/.well-known/openpgpkey/hu/dj3498u4hyyarh35rkjfnghbjxug6b19#/gpgkey-0FDE7BE0E88F5E48.gpg
+Source0:        %{git_url}/archive/%{commit}/%{name}-%{abbrev}.tar.gz
+
 
 BuildRequires:  gcc-c++
 BuildRequires:  gnupg2
@@ -34,7 +32,7 @@ BuildRequires:  pkgconfig(wayland-cursor)
 BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.14
-BuildRequires:  pkgconfig(wlroots) >= 0.13.0
+BuildRequires:  pkgconfig(wlroots) >= 0.14.0
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xkbcommon)
 # Dmenu is the default launcher in sway
@@ -45,6 +43,8 @@ Recommends:     findutils
 Recommends:     sway-systemd
 
 Requires:       swaybg
+Recommends:     swayidle
+Recommends:     swaylock
 # By default the Fedora background is used
 Recommends:     desktop-backgrounds-compat
 
@@ -79,8 +79,7 @@ slurp and jq to do the heavy lifting, and mostly provides an easy to use
 interface.
 
 %prep
-%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
-%autosetup -p1
+%autosetup -p1 -N -n %{name}-%{commit}
 
 %build
 %meson \
@@ -128,6 +127,17 @@ install -D -m755 -pv contrib/grimshot %{buildroot}%{_bindir}/grimshot
 %{_mandir}/man1/grimshot.1*
 
 %changelog
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.6.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Sat Jul 10 2021 Björn Esser <besser82@fedoraproject.org> - 1.6.1-2
+- Rebuild for versioned symbols in json-c
+
+* Thu Jun 24 2021 Aleksei Bavshin <alebastr@fedoraproject.org> - 1.6.1-1
+- Update to 1.6.1
+- Add Recommends: swayidle, swaylock
+- Add upstream patch to fix pixman renderer init.
+
 * Wed Apr 07 2021 Aleksei Bavshin <alebastr@fedoraproject.org> - 1.6-1
 - Update to 1.6 (#1939820)
 
