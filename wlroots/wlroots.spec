@@ -1,9 +1,14 @@
+%define git_owner       wlroots
+%define git_url         https://gitlab.freedesktop.org/%{git_owner}/%{name}
+%define commit          d8ca4945581577f570c02ad46878571c48a08c79
+%define abbrev          %(c=%{commit}; echo ${c:0:7})
+
 # Version of the .so library
-%global abi_ver 9
+%global abi_ver 10
 
 Name:           wlroots
-Version:        0.14.1
-Release:        2%{?dist}
+Version:        0.15.0
+Release:        0.20211213git%{abbrev}%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Source files/overall project licensed as MIT, but
@@ -16,10 +21,7 @@ Summary:        A modular Wayland compositor library
 # the underlying licenses.
 License:        MIT
 URL:            https://github.com/swaywm/%{name}
-Source0:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz
-Source1:        %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz.sig
-# 0FDE7BE0E88F5E48: emersion <contact@emersion.fr>
-Source2:        https://emersion.fr/.well-known/openpgpkey/hu/dj3498u4hyyarh35rkjfnghbjxug6b19#/gpgkey-0FDE7BE0E88F5E48.gpg
+Source0:        %{git_url}/archive/%{commit}/%{git_owner}-%{name}-%{abbrev}.tar.gz
 
 # this file is a modification of examples/meson.build so as to:
 # - make it self-contained
@@ -73,8 +75,7 @@ Development files for %{name}.
 
 
 %prep
-%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
-%autosetup -p1
+%autosetup -p1 -N -n %{name}-%{commit}
 
 
 %build
