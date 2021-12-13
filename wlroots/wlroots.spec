@@ -52,6 +52,7 @@ BuildRequires:  pkgconfig(xcb-renderutil)
 BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  pkgconfig(xwayland)
 BuildRequires:  pkgconfig(vulkan)
+BuildRequires:  glslang
 
 # only select examples are supported for being readily compilable (see SOURCE3)
 %global examples \
