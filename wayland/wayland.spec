@@ -1,11 +1,11 @@
 Name:           wayland
-Version:        1.19.0
-Release:        1%{?dist}
+Version:        1.20.0
+Release:        0%{?dist}
 Summary:        Wayland Compositor Infrastructure
 
 License:        MIT
 URL:            http://wayland.freedesktop.org/
-Source0:        https://wayland.freedesktop.org/releases/%{name}-%{version}.tar.xz
+Source0:        http://wayland.freedesktop.org/releases/%{name}-%{version}.tar.xz
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
@@ -109,6 +109,9 @@ Wayland server library
 %{_libdir}/libwayland-server.so.0*
 
 %changelog
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.19.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Thu Jan 28 2021 Kalev Lember <klember@redhat.com> - 1.19.0-1
 - Update to 1.19.0
 - Switch to meson build system
