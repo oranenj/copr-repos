@@ -4,7 +4,7 @@
 %define abbrev          %(c=%{commit}; echo ${c:0:7})
 
 Name:           sway
-Version:        1.6.1
+Version:        1.6.2
 Release:        0.20211213git%{abbrev}%{?dist}
 Summary:        i3-compatible window manager for Wayland
 License:        MIT
