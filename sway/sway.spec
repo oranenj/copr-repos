@@ -79,6 +79,7 @@ slurp and jq to do the heavy lifting, and mostly provides an easy to use
 interface.
 
 %prep
+ls -lR
 %autosetup -p1 -N -n %{name}-%{abbrev}
 
 %build
