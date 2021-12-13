@@ -5,7 +5,7 @@
 
 Name:           sway
 Version:        1.6.2
-Release:        0.20211213git%{abbrev}%{?dist}
+Release:        4.20211213git%{abbrev}%{?dist}
 Summary:        i3-compatible window manager for Wayland
 License:        MIT
 URL:            https://github.com/swaywm/sway
@@ -79,7 +79,6 @@ slurp and jq to do the heavy lifting, and mostly provides an easy to use
 interface.
 
 %prep
-ls -lR
 %autosetup -p1 -N -n %{name}-%{commit}
 
 %build
