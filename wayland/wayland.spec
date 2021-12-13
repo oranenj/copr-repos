@@ -4,8 +4,8 @@ Release:        0%{?dist}
 Summary:        Wayland Compositor Infrastructure
 
 License:        MIT
-URL:            http://wayland.freedesktop.org/
-Source0:        http://wayland.freedesktop.org/releases/%{name}-%{version}.tar.xz
+URL:            https://wayland.freedesktop.org/
+Source0:        https://wayland.freedesktop.org/releases/%{name}-%{version}.tar.xz
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
