@@ -1,6 +1,6 @@
 Name: znapzend
 Version: 0.19.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: zfs backup with remote capabilities and mbuffer integration
 License: GPLv3+
 URL: http://www.znapzend.org
